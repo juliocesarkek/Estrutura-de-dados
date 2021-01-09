@@ -1,0 +1,120 @@
+#include <iostream>
+//Enunciado no final
+using namespace std;
+  int tam = 0;
+//Criando a fila
+struct no {
+  int info;
+  struct no * prox;
+  }; 
+
+  //Renomeando o struct no para noPtr
+  typedef struct no * noPtr;
+  //Fazendo que o topo, seja um ponteiro de noPtr que comece nulo
+  noPtr topo = NULL;
+  noPtr ultimo = NULL;
+//enfileira - por elementos na fila
+
+
+bool listaVazia(){
+  if(topo == NULL)
+    return true;
+  else
+  return false;
+}
+
+void enqueue() {
+  //fazendo p ser uma nova struct do tipo no
+  noPtr aux, p = new no;
+
+
+  cout << " Digite o valor do elemento: ";
+  cin >>  p-> info;
+
+  p-> prox = NULL;
+
+  if(listaVazia())
+    topo = p;
+  else if (tam >= 5)
+    cout << endl << "lista cheia!" << endl;
+  else
+    {
+      aux = topo;
+      while(aux -> prox != NULL)
+      {
+      aux = aux -> prox;
+      tam++;
+      }
+      aux->prox = p;
+      ultimo = aux -> prox;
+   }
+}
+
+
+//desenfileirar - tirar elementos da fila
+void dequeue() 
+{
+  noPtr p;
+
+  if(listaVazia()) 
+  cout<< "Fila Vazia!";
+  else
+  {
+    p = topo;
+    topo = p -> prox; //topo = topo-> prox;
+    delete p;
+    cout << " O elemento foi retirado da fila!" << endl;
+  }
+}
+
+void listar(){
+  noPtr x = topo;
+  while(x != NULL){
+    cout << x -> info << " | ";
+    x = x -> prox;
+}
+cout << endl;
+}
+
+int main() {
+  int t = -1;
+
+  while(t != 0){
+  cout << "Operações: " << endl;
+  cout << " 1. listar." << endl;
+  cout << " 2. inserir processo. " << endl;
+  cout << " 3. retirar processo. " << endl;
+  cout << " 0. Sair. " << endl;
+  cin  >> t;
+    switch(t){
+      case 1:
+        listar();
+        cout << endl;
+        break;
+      case 2: 
+        enqueue();
+        cout << endl;
+        break;
+      case 3:
+        dequeue();
+        cout << endl;
+        break;
+      case 0:
+        cout << endl << endl << "Bye!";
+        break;
+      default:
+        cout << "Escolha uma opção válida." << endl;
+        break;
+    }
+  }
+}
+
+/*Inserir no spooler: inserção do processo na lista (array). Máximo 5 processos. Caso contrário, mostre
+mensagem que deverá ser retirado um processo. Inserir apenas um por vez. Retornar ao menu.
+
+b) retirar do spooler: remoção do processo da lista (lembrando que a impressão é pela ordem de
+chegada. O primeiro que é colocado na lista é o primeiro a ser retirado na lista). Retirar apenas um
+por vez. Retornar ao menu. Se o usuário desejar remover e não tiver nenhum processo na lista,
+mostre mensagem que a lista está vazia.
+Faça um menu com as opções Inserir Processo, Retirar Processo e Sair. Assim o usuário poderá escolher uma
+das opções. Implemente também uma função para verificar se a lista está vazia*/
