@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main(void) {
+  int reflexiva, transitiva, simetrica, tam;
+  reflexiva = simetrica = transitiva = 1;
+  srand(time(NULL));
+
+  printf("Entre com o tamanho da matriz:");
+  scanf("%d", &tam);
+  int matriz[tam][tam];
+
+  for(int i = 0; i < tam; i++) {
+    for(int j = 0; j < tam; j++){ 
+     matriz[i][j] = rand() % 2;
+    }
+  }
+
+  for(int i = 0; i < tam; i++) 
+  {
+    //checando se é reflexiva
+    reflexiva *= matriz[i][i];
+    for(int j = 0; j < tam; j++) 
+    {
+      //checando se é simétrica
+      if(matriz[i][j] && matriz[j][i] != 1)
+        simetrica = 0;
+
+      for(int k = 0; k < tam; k++) 
+      {
+        //checando se é transitiva
+        if(matriz[i][j] && matriz[j][k] && !matriz[i][k]) 
+          transitiva = 0;
+      }
+    }
+  }
+
+  for(int i = 0; i < tam; i++){ 
+    for(int j = 0; j < tam; j++)
+    { 
+     printf("%d | ", matriz[i][j]);
+    }
+    printf("\n"); 
+  }
+
+  printf("\n"); 
+//1 para sim, 0 para não
+  printf("reflexiva: %d\nsimetrica: %d\ntransitiva: %d", reflexiva, simetrica,transitiva);
+  return 0;
+}
