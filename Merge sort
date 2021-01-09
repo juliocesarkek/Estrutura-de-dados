@@ -1,0 +1,98 @@
+#include <iostream>
+#include <stdlib.h>
+using namespace std;
+#define n 10
+//Enunciado no fim
+
+void intercala(int A[], int inicio, int fim, int meio)
+{
+  int i, aux[n], poslivre = inicio, inicioA1 = inicio, inicioA2 = meio+1;
+
+  while(inicioA1 <= meio &&  inicioA2 <= fim)
+  {
+  
+    if(A[inicioA1] > A[inicioA2])
+    {
+      aux[poslivre] = A[inicioA2];
+      inicioA2++; 
+    } 
+    else 
+    {
+      aux [poslivre] = A[inicioA1];
+      inicioA1++;
+    }
+    poslivre++;
+  }
+
+  //para elemento do primeiro vetor ñ intercalado
+  for (i = inicioA1; i <= meio; i++)
+  {
+    aux[poslivre] = A[i];
+    poslivre++;
+  }
+
+  //para elemento do segundo vetor ñ intercalado
+  for (i = inicioA2; i <= fim; i++)
+  {
+    aux[poslivre] = A[i];
+    poslivre++;
+  }
+
+  //atualizar array conforme array auxiliar
+  for (i = inicio; i <= fim; i++)
+  {
+    A[i] = aux[i];
+  }
+}
+
+void mergesort(int v[], int inicio, int fim)
+{
+  int meio = 0;
+  
+  if(inicio < fim)
+  {
+    meio = (inicio+fim)/2;
+    mergesort(v, inicio, meio);
+    mergesort(v, meio+1, fim);
+    intercala(v, inicio, fim, meio);
+  }
+
+ 
+}
+
+
+int main() {
+  int vetor[n], inicio, fim;
+  srand(time(NULL));
+
+  for(int i = 0; i < n; i++)
+  {
+    vetor[i] = rand()%100;
+  }
+
+  inicio = 0;
+  fim = n - 1;
+
+  cout << endl << "vetor desordenado: "   << endl ;
+
+    for(int i = 0; i < n; i++)
+  {
+    cout << vetor[i] << " | ";
+  }
+
+  cout << endl  << endl <<"vetor ordenado: " << endl;
+
+  mergesort(vetor, inicio, fim);
+
+   for(int i = 0; i < n; i++)
+  {
+    cout << vetor[i] << " | ";
+  }
+}
+
+/*
+ Um determinado algoritmo classificou em ordem crescente uma lista de 50 valores inteiros usando o
+método de divisão e conquista. Para realizar a combinação dos elementos foi feita a intercalação. Ao final
+do processo, todos os valores ficaram na ordem desejada. Usando como base essas dicas, implemente
+este algoritmo de ordenação e informe as complexidades de pior caso e de caso médio.
+*/
