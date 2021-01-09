@@ -1,0 +1,114 @@
+#include <iostream>
+using namespace std;
+//implementação com pilha
+
+struct no{
+  int info;
+  struct no *prox;
+};
+
+typedef struct no *noPtr;
+
+noPtr topo = NULL;
+
+bool listaVazia()
+{
+  if(topo == NULL)
+    return true;
+  else
+    return false;
+}
+
+void push() //Empilhar: adicionar elementos
+{
+  noPtr p;
+  int valor;
+  
+  p = new no;
+  cout << "Digite o valor do elemento:";
+  cin >> valor;
+  p -> info = valor;
+  p -> prox = topo;
+  topo = p;
+}
+
+void pop() //Desempilhar: apagar elementos
+{ 
+  noPtr p = topo;
+
+  if(!listaVazia())
+  {
+    topo = topo -> prox;
+    delete (p);
+    cout <<"\n O elemento foi retirado da pilha. " << endl;
+  } 
+  else
+  { 
+    cout << endl << "\nLista Vazia!" << endl;
+  }
+}
+
+void listar (){
+  noPtr list = topo;
+  cout << endl;
+  while(list != NULL){
+    cout << list -> info << " |";
+    list = list -> prox;
+  }
+  cout << endl << endl;
+}
+
+//Contando qtd de nós da pilha
+int contarnos(){
+  noPtr x = topo;
+  int a;
+  while(x != NULL){
+  x = x -> prox;
+  a++; 
+  }
+  return a;
+}
+
+void menu (){
+  int m = -1;
+
+  do{
+  cout << " ------- Operações ------- " << endl;
+  cout << "1. Listar: " << endl;
+  cout << "2. Empilhar: " << endl;
+  cout << "3. Desempilhar: " << endl;
+  cout << "0. Sair: " << endl;
+  cout << "--------------------------------- " << endl;
+ 
+  cout<<"Selecione uma opcao: ";
+  cin >> m;
+  switch(m){
+    case 1:
+    listar();
+    break;
+
+    case 2:
+    push();
+    break;
+
+    case 3:
+    pop();
+    break;
+
+    case 0:
+    cout << "Quantidade de nós: " << contarnos();
+    cout << endl << endl << "Fim das opções!";
+    break;
+
+    default:
+    cout << endl << "Insira uma opção válida: ";
+    break;
+    }
+  } while(m != 0);
+}
+
+int main() {
+  menu();
+
+  return 0;
+}
