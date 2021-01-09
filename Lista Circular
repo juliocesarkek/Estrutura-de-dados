@@ -1,0 +1,139 @@
+#include <iostream>
+using namespace std;
+
+struct no {
+int info;
+struct no * prox;
+struct no * ant;
+};
+
+typedef struct no * noPtr;
+
+void inserir (noPtr *, noPtr *);
+void remover (noPtr *, noPtr *);
+void listar (noPtr, noPtr);
+bool listavazia(noPtr);
+
+int main(){
+  int op;
+  noPtr inicio = NULL;
+  noPtr fim = NULL;
+
+  do{
+        cout << endl << "---- Menu ----" <<endl;
+        cout << "1. Inserir"<<endl;
+        cout << "2. Remover" << endl;
+        cout << "3. Listar" << endl;
+        cout << "0. Sair" << endl;
+        cin >> op;
+        cout << endl << "--------------" <<endl;
+        switch (op){
+            case 1:
+                inserir(&inicio, &fim);
+                break;
+            case 2:
+                remover (&inicio, &fim);
+                break;
+            case 3:
+               listar(inicio, fim);
+                break;
+        }
+
+    }while (op!=0);   
+}
+
+bool listavazia(noPtr ini){
+  if(ini == NULL)
+    return true;
+  else 
+    return false;  
+}
+
+// >>> ITEM 1 
+void inserir (noPtr *ini, noPtr *fim){ 
+noPtr p = new no;
+cout << "Digite o valor: ";
+cin >> (p->info);
+cout << "Incluído em: " << &(p->info);
+
+  if (listavazia(*ini)){
+    *ini = p;
+    *fim = p;
+    p->prox = p;
+    p->ant = p;
+  }else{
+    (*fim)->prox = p;
+     p -> ant = *fim; 
+    *fim = p; 
+    p->prox= *ini; 
+  }
+}
+
+// >>> ITEM 2
+void listar (noPtr ini, noPtr fim){
+noPtr p = ini;
+
+  if (listavazia(ini)){
+    cout << "\nLista vazia!";
+  } else {
+      do {
+        cout << p->info << endl;
+        p = p->prox;
+      }while(p!=ini);
+        cout << "\nEndereço do primeiro elemento: " << ini;
+        cout << "\nEndereço do elemento depois do ultimo elemento: " << (fim->prox);  
+    }
+  }
+
+// >>> ITEM 3 
+void remover (noPtr *ini, noPtr *fim){ 
+noPtr p= *ini, ant;
+
+  int x;
+  bool achei = false;
+
+  if (!listavazia(p)) 
+    {
+      cout << "Elemento a retirar: ";
+      cin >> x;
+      
+      do
+      {
+        if (p->info == x) 
+        {
+            if((*ini) == p && p == (*fim))   
+            {             
+              delete(p);
+              (*ini) = NULL;
+              (*fim) = NULL;
+            }
+             else if ((*ini) == p)
+            {
+              *ini = p -> prox;
+              (*fim) -> prox = (*ini);
+              delete(p);
+             }else if ((*fim) == p)
+             {
+
+              (p->ant)-> prox = p->prox;
+              (p->prox)-> ant = p->ant; 
+              *fim = p->ant;
+              delete(p);
+              
+             }else
+             { 
+              (p->ant)-> prox = p->prox;
+              (p->prox)-> ant = p->ant;        
+              delete(p); 
+            }
+          cout << "Elemento retirado." << endl;
+          achei = true; 
+        }
+      ant = p;
+      p = p->prox; 
+      }while(p != (*ini) && achei == false);
+      if (!achei)
+      cout << "Elemento não encontrado.";
+    } 
+}
+
