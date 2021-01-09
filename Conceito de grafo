@@ -1,0 +1,149 @@
+#include <iostream>
+using namespace std;
+
+int c=1;
+
+struct grafo {
+  int vertice;
+  struct grafo * prox;
+};
+
+typedef struct grafo * grafoPtr;
+
+struct lista {
+  int cod;
+  struct grafo *proxgrafo;
+  struct lista * proxLista;
+};
+
+typedef struct lista * listaPtr;
+
+void inserir (listaPtr *inicioLista){
+listaPtr q = new lista;
+string resposta;
+
+  q->proxgrafo = NULL;
+  q->cod = c++;
+
+  //adicionando na lista (adicionando em pilha)
+  q->proxLista = *inicioLista;
+  *inicioLista = q;
+
+cout << "A aresta " << q->cod << " tem relacionamento com quais arestas?" << endl;
+
+  do{
+    cout << "Aresta: ";
+    grafoPtr p = new grafo;
+    cin >> p->vertice;
+    p->prox = q->proxgrafo;
+    q->proxgrafo = p;
+
+    cout << "Algum outro vértice?[s] para sim, [n] para não." << endl;
+    cin >> resposta;
+  } while (resposta != "n" && resposta != "N");
+}
+
+void mostrarGrafo (listaPtr inicioLista){
+listaPtr p = inicioLista;
+grafoPtr q;
+
+  if (inicioLista == NULL){
+    cout << "Nenhuma aresta foi adicionada" << endl;
+  }else {
+    do{
+      q = p->proxgrafo;
+      cout << endl;
+      cout << "Aresta: " << p->cod << endl;
+        if (q==NULL){
+          cout << "Não se relaciona com ninguem" << endl;
+        }else{
+          cout << "Têm relacionamentos com: "<<endl;
+            do{
+              cout << "Aresta: " << q->vertice;
+              q=q->prox;
+            }while (q!=NULL);
+          p=p->proxLista;
+        }
+    }while (p != NULL); 
+  }
+
+
+}
+
+void remover (listaPtr *inicioLista){
+listaPtr p = *inicioLista, aux;
+grafoPtr q;
+bool achei = false;
+int x;
+
+cout << "Deseja remover qual aresta? " << endl; 
+cin >> x;
+
+  do{
+    if (p->cod==x){
+      do{
+        q = p->proxgrafo;
+        p->proxgrafo = q->prox;;
+        delete (q);
+      }while (p->proxgrafo!=NULL);
+      if (*inicioLista == p){
+        *inicioLista = p->proxLista;
+        delete(p);
+      }else {
+        aux = p->proxLista;
+        p->proxLista = aux->proxLista;
+        delete (aux);
+      }
+      achei=true;
+    }
+    p=p->proxLista;
+  }while(p!=NULL && achei==false);
+  cout << "Aresta " << x << " removida" << endl;
+}
+
+int main() {
+int escolha;
+string parar;
+
+listaPtr inicioLista = NULL;
+
+  do{
+    cout << "Selecione uma opção" << endl;
+    cout << "1) Definição do grafo" << endl;
+    cout << "2) Adicionar arestas" << endl;
+    cout << "3) remover arestas" << endl;
+    cout << "4) Vizinhos de um vertice" << endl;
+    cout << "5) Teste de vizinhança entre par de vertices" << endl;
+    cout << "0) Sair" << endl;
+    cin >> escolha;
+
+    cout << endl;
+
+    switch (escolha){
+      case 1:
+        mostrarGrafo(inicioLista);
+      break;
+
+      case 2:
+        inserir(&inicioLista);
+      break;
+
+      case 3:
+        remover(&inicioLista);
+      break;
+
+      case 4:
+     //   vizinhos();
+      break;
+
+      case 5:
+      //  saoVizinhos();
+      break;
+
+      default:
+      cout << "\nInsira uma opção válida\n";
+    }
+
+    cout << endl;
+  }while(escolha != 0);
+}
