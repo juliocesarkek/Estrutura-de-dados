@@ -1,0 +1,267 @@
+#include <iostream>
+using namespace std;
+
+typedef struct Arv
+{
+	int info;
+  int alt;
+	struct Arv *esq;
+  struct Arv *dir;
+}Arv;
+ 
+Arv *inserir(Arv *,int); // O(log n)
+Arv *remover(Arv *,int);// O(log n)
+int altura( Arv *); // O(1)
+Arv *rotacaodir(Arv *); // O(1)
+Arv *rotacaoesq(Arv *); // O(1)
+Arv *RR(Arv *); // O(1)
+Arv *LL(Arv *); // O(1)
+Arv *LR(Arv *); // O(1)
+Arv *RL(Arv *); // O(1)
+int balanceado(Arv *); // O(1)
+void ordem_infixa(Arv *); // O(n)
+
+int main()
+{
+	Arv *raiz = NULL;
+	int valor,n,op;
+	
+	do
+	{
+		cout << "\n1)inserir.";
+		cout << "\n2)remover.";
+		cout << "\n3)Listar";
+		cout << "\n4)sair.\n";
+		cin >> op;
+		
+		switch(op)
+		{
+			case 1: cout << "\nValor a ser inserido: ";
+				cin >>valor;
+				raiz = inserir(raiz,valor);
+			break;
+					
+			case 2: cout << "\nValor a ser removido: ";
+				cin >>valor;
+				raiz = remover(raiz,valor);
+			break;
+			
+			case 3: 
+				cout << "\n\nordem infixa: ";
+				ordem_infixa(raiz);
+				cout << "\n";
+			break;
+
+      default:
+        cout << "\nInsira uma opção válida.\n";
+      break;			
+		} 
+	} while(op != 4);
+	
+	return 0;
+}
+
+// O(log n) 
+Arv * inserir(Arv *raiz,int x)
+{
+	if(raiz == NULL)
+	{
+		raiz = new Arv;
+		raiz -> info = x;
+		raiz -> esq = NULL;
+		raiz -> dir = NULL;
+	}
+	else
+		if(x < raiz->info)		
+		{
+			raiz->dir = inserir(raiz->dir,x);
+			if(balanceado(raiz) == -2){
+				if(x < raiz ->dir -> info)
+					raiz = RR(raiz);
+				else
+					raiz = RL(raiz);
+      }    
+		}
+		else
+			if(x > raiz->info)
+			{
+				raiz->esq = inserir(raiz->esq,x);
+				if(balanceado(raiz) == 2){
+					if(x > raiz->esq->info)
+						raiz = LL(raiz);
+					else
+						raiz = LR(raiz);
+        }    
+			}
+		
+		raiz->alt = altura(raiz);
+		
+		return(raiz);
+}
+ 
+// O(log n) 
+Arv * remover(Arv *raiz, int x)
+{
+	Arv *p;
+	
+	if(raiz == NULL)
+	{
+		return NULL;
+	}
+	else
+		if(x < raiz->info)		
+		{
+			raiz->dir = remover(raiz->dir,x);
+			if(balanceado(raiz) == 2){
+				if(balanceado(raiz->esq) >= 0)
+					raiz = LL(raiz);
+				else
+					raiz = LR(raiz);
+      }    
+		}
+		else
+			if(x > raiz->info)
+			{
+				raiz->esq = remover(raiz->esq, x);
+				if(balanceado(raiz) == -2){
+					if(balanceado(raiz->dir) <= 0)
+						raiz = RR(raiz);
+					else
+						raiz = RL(raiz);
+        }    
+			}
+			else
+			{
+				if(raiz->dir != NULL)
+				{	
+					p = raiz->dir;
+					
+					while(p->esq != NULL)
+						p = p->esq;
+					
+					raiz->info = p->info;
+					raiz->dir = remover(raiz->dir, p->info);
+					
+					if(balanceado(raiz) == 2){
+						if(balanceado(raiz->esq) >= 0)
+							raiz = LL(raiz);
+						else
+							raiz = LR(raiz);
+          }    
+				}
+				else
+					return(raiz->esq);
+			}
+	raiz->alt = altura(raiz);
+	return(raiz);
+}
+
+// O(1) 
+int altura(Arv *raiz)
+{
+	int altEsq,altDir;
+	if(raiz == NULL)
+		return(0);
+	
+	if(raiz->esq == NULL)
+		altEsq = 0;
+	else
+		altEsq = 1 + raiz->esq -> alt;
+		
+	if(raiz->dir == NULL)
+		altDir = 0;
+	else
+		altDir = 1 + raiz->dir -> alt;
+	
+	if(altEsq > altDir)
+		return(altEsq);
+	
+	return(altDir);
+}
+
+// O(1) 
+Arv * rotacaodir(Arv *x)
+{
+	Arv *y;
+	y = x->esq;
+	x->esq = y->dir;
+	y->dir = x;
+	x->alt = altura(x);
+	y->alt = altura(y);
+	return(y);
+}
+ 
+// O(1) 
+Arv * rotacaoesq(Arv *x)
+{
+	Arv *y;
+	y = x->dir;
+	x->dir = y->esq;
+	y->esq = x;
+	x->alt = altura(x);
+	y->alt = altura(y);
+	
+	return(y);
+}
+
+// O(1) 
+Arv * RR(Arv *raiz)
+{
+	raiz = rotacaoesq(raiz);
+	return(raiz);
+}
+
+// O(1) 
+Arv * LL(Arv *raiz)
+{
+	raiz = rotacaodir(raiz);
+	return(raiz);
+}
+
+// O(1) 
+Arv * LR(Arv *raiz)
+{
+	raiz->esq = rotacaoesq(raiz->esq);
+	raiz = rotacaodir(raiz);
+	
+	return(raiz);
+}
+
+// O(1) 
+Arv * RL(Arv *raiz)
+{
+	raiz->dir = rotacaodir(raiz->dir);
+	raiz = rotacaoesq(raiz);
+	return(raiz);
+}
+
+// O(1) 
+int balanceado(Arv *raiz)
+{
+	int altEsq, altDir;
+	if(raiz == NULL)
+		return(0);
+ 
+	if(raiz->esq == NULL)
+		altEsq = 0;
+	else
+		altEsq = 1 + raiz->esq -> alt;
+ 
+	if(raiz->dir == NULL)
+		altDir = 0;
+	else
+		altDir = 1 + raiz->dir -> alt;
+ 
+	return(altEsq-altDir);
+}
+
+// O(n) 
+void ordem_infixa(Arv *raiz)
+{
+	if(raiz != NULL)
+	{
+		ordem_infixa(raiz->esq);
+		cout  << " | "<<raiz->info ;
+		ordem_infixa(raiz->dir);
+	} 
+}
