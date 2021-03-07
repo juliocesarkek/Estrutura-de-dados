@@ -11,6 +11,7 @@ typedef struct no *noPtr;
 
 noPtr topo = NULL;
 
+//Checando se a lista tá vazia
 bool listaVazia()
 {
   if(topo == NULL)
